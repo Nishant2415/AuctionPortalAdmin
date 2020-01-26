@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "264936596353",
+    "firebase_url": "https://auction-portal-299f1.firebaseio.com",
+    "project_id": "auction-portal-299f1",
+    "storage_bucket": "auction-portal-299f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264936596353:android:a0d2a72ab58521cfdabe80",
+        "android_client_info": {
+          "package_name": "in.nishant.auctionportaladmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264936596353-edc5kudm8ufiuipuk0u0ligf7srr4nma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.nishant.auctionportaladmin",
+            "certificate_hash": "4007d31001b99e8eee33ded0f61516fa2caf16b5"
+          }
+        },
+        {
+          "client_id": "264936596353-t51olk73evalu7p5qe8onimajn2b1fo3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAXqU3VoNO8OpoELgeyCz5aJBoVqItBNY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264936596353-t51olk73evalu7p5qe8onimajn2b1fo3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
