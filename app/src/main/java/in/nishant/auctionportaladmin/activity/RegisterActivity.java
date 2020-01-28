@@ -1,4 +1,4 @@
-package in.nishant.auctionportaladmin;
+package in.nishant.auctionportaladmin.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import in.nishant.auctionportaladmin.R;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
