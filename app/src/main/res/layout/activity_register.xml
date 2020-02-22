@@ -1,57 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/grey"
     tools:context=".activity.RegisterActivity">
 
-    <EditText
-        android:id="@+id/reg_edtName"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter name"
-        android:inputType="textCapWords"
-        android:textSize="16dp" />
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@drawable/auction_design"/>
 
-    <EditText
-        android:id="@+id/reg_edtEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter email"
-        android:inputType="textEmailAddress"
-        android:textSize="16dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/reg_edtMobileno"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter mobileno"
-        android:inputType="number"
-        android:textSize="16dp" />
+            <ImageView
+                android:src="@drawable/auction_title"
+                android:layout_width="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content" />
 
-    <EditText
-        android:id="@+id/reg_edtPasssword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter password"
-        android:inputType="textPassword"
-        android:textSize="16dp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:cardCornerRadius="10dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="60dp"
+                app:cardElevation="5dp">
 
-    <EditText
-        android:id="@+id/reg_edtConfirmPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Confirm Password"
-        android:inputType="textPassword"
-        android:textSize="16dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="20dp">
 
-    <Button
-        android:id="@+id/reg_btnRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"/>
+                    <TextView
+                        android:text="REGISTER"
+                        android:textSize="25sp"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold|italic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-</LinearLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/reg_edtName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter name"
+                            android:inputType="textCapWords"
+                            android:textSize="@dimen/editTextSize"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/reg_edtEmail"
+                            android:textSize="@dimen/editTextSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter email"
+                            android:inputType="textEmailAddress"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/reg_edtMobileNo"
+                            android:maxLength="10"
+                            android:textSize="@dimen/editTextSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter mobileno"
+                            android:inputType="number"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:textSize="@dimen/editTextSize"
+                            android:id="@+id/reg_edtPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter password"
+                            android:inputType="textPassword"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:textSize="@dimen/editTextSize"
+                            android:id="@+id/reg_edtConfirmPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Confirm Password"
+                            android:inputType="textPassword"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/reg_btnRegister"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Register"
+                        android:background="@drawable/layout_rounded_button"
+                        android:textColor="@color/white"
+                        android:paddingStart="50dp"
+                        android:paddingEnd="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="20dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</ScrollView>
