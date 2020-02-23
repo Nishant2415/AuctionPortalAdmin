@@ -2,14 +2,16 @@ package in.nishant.auctionportaladmin.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
-
+import com.google.android.material.tabs.TabLayout;
 import in.nishant.auctionportaladmin.R;
+import in.nishant.auctionportaladmin.adapter.AuctionListPagerAdapter;
 
 public class AuctionListActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    private TabLayout.Tab tab;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +23,32 @@ public class AuctionListActivity extends AppCompatActivity {
 
     private void initComponents() {
         // Toolbar
-        toolbar = findViewById(R.id.auctionList_toolbar);
+        Toolbar toolbar = findViewById(R.id.auctionList_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Auction List");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ViewPager viewPager = findViewById(R.id.auctionList_viewPager);
+        tabLayout = findViewById(R.id.auctionList_tabLayout);
+        setUpViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
+        tab = tabLayout.getTabAt(1);
+        tab.select();
+    }
+
+    private void setUpViewPager(ViewPager viewPager) {
+        AuctionListPagerAdapter adapter = new AuctionListPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        int position = tabLayout.getSelectedTabPosition();
+        if(position!=1){
+            tab = tabLayout.getTabAt(1);
+            tab.select();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

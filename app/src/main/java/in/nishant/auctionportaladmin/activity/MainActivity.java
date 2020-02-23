@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 cardTotalUsers.setVisibility(View.INVISIBLE);
                                 fabAddProduct.setVisibility(View.VISIBLE);
                             }
-                            pd.hide();
+                            pd.dismiss();
                         }
                     }
                 }

@@ -1,10 +1,10 @@
 package in.nishant.auctionportaladmin.model;
 
-public class TotalUsers {
+public class TotalUsersModel {
     private String username;
     private String mobileNo;
 
-    public TotalUsers() {
+    public TotalUsersModel() {
     }
 
     public String getUsername() {

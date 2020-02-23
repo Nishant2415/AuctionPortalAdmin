@@ -95,17 +95,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 CustomToast.show(RegisterActivity.this, 1, "Registration successful!");
+                                                pd.dismiss();
                                                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                                                 finish();
                                             } else {
                                                 CustomToast.show(RegisterActivity.this, 0, "Something wrong!");
+                                                pd.dismiss();
                                                 Log.e("AuctionError", task.getException().toString());
                                             }
-                                            pd.hide();
                                         }
                                     });
                         } else {
-                            pd.hide();
+                            pd.dismiss();
                             CustomToast.show(RegisterActivity.this, 0, "Something wrong!");
                             Log.e("AuctionError", task.getException().toString());
                         }

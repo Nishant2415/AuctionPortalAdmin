@@ -73,13 +73,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
-                                    pd.hide();
                                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                                     finish();
                                 } else {
-                                    pd.hide();
                                     CustomToast.show(LoginActivity.this,0,"Invalid username or password!");
                                 }
+                                pd.dismiss();
                             }
                         });
             }

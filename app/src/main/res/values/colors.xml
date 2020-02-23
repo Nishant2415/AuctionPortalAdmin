@@ -8,4 +8,5 @@
     <color name="colorLightGreen">#36AF3C</color>
     <color name="colorLightRed">#EE3528</color>
     <color name="colorCardBackGround">#F1F1F1</color>
+    <color name="tabTextColor">#9AFFFFFF</color>
 </resources>

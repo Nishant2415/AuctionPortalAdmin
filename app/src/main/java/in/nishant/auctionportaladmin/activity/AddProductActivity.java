@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -59,9 +62,9 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
     private String mEndDate,mEndTime;
     private SimpleDateFormat sdf;
     private Calendar calendar = Calendar.getInstance();
-    private ProgressDialog pd;
     private StorageReference mStorageRef;
     private FirebaseAuth mAuth;
+    private boolean isImage = false;
     private DatabaseReference rootRef;
 
     @Override
@@ -93,13 +96,6 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         mStorageRef = FirebaseStorage.getInstance().getReference();
         rootRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-    }
-
-    private void showProgressDialog(String msg) {
-        pd = new ProgressDialog(AddProductActivity.this,R.style.DialogTheme);
-        pd.setMessage(msg);
-        pd.setCanceledOnTouchOutside(false);
-        pd.show();
     }
 
     private void setListeners() {
@@ -138,33 +134,66 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
             },hour,minute,false);
             tpd.show();
         } else if(v==btnAddProduct){
-            if(edtProductName.getText().toString().trim().equals("") |
-                    edtMinimalPrice.getText().toString().trim().equals("") |
-                    edtDescription.getText().toString().trim().equals("") |
+            if ( !isImage |
+                    edtProductName.getText().toString().trim().isEmpty() |
+                    edtMinimalPrice.getText().toString().trim().isEmpty() |
+                    edtDescription.getText().toString().trim().isEmpty() |
                     TextUtils.isEmpty(mEndDate) |
                     TextUtils.isEmpty(mEndTime)){
                 CustomToast.show(AddProductActivity.this,0,"Please enter product details!");
             } else {
-                showProgressDialog("Please wait");
-                Map<String,Object> productMap = new HashMap<>();
-                productMap.put("productName",edtProductName.getText().toString().trim());
-                productMap.put("minimalPrice",edtMinimalPrice.getText().toString().trim());
-                productMap.put("description",edtDescription.getText().toString().trim());
-                productMap.put("endDate",mEndDate);
-                productMap.put("endTime",mEndTime);
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddProductActivity.this);
+                builder.setCancelable(false)
+                        .setMessage("Are you sure you want to sell this product?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final ProgressDialog pd = new ProgressDialog(AddProductActivity.this,R.style.DialogTheme);
+                                pd.setCanceledOnTouchOutside(false);
+                                pd.setMessage("Please wait");
+                                pd.show();
+                                final Map<String,Object> productMap = new HashMap<>();
+                                productMap.put("productName",edtProductName.getText().toString().trim());
+                                productMap.put("minimalPrice",edtMinimalPrice.getText().toString().trim());
+                                productMap.put("description",edtDescription.getText().toString().trim());
+                                productMap.put("endDate",mEndDate);
+                                productMap.put("endTime",mEndTime);
+                                productMap.put("highestBid","No bid yet");
 
-                rootRef.child("Products").child(mAuth.getCurrentUser().getUid()).updateChildren(productMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                rootRef.child("Products").child("My auction").child(mAuth.getCurrentUser().getUid()).updateChildren(productMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+
+                                            rootRef.child("Products").child("Current auction").child(mAuth.getCurrentUser().getUid()).updateChildren(productMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        pd.dismiss();
+                                                        CustomToast.show(AddProductActivity.this,1,"Product added!");
+                                                        startActivity(new Intent(AddProductActivity.this,MainActivity.class));
+                                                        finish();
+                                                    } else {
+                                                        pd.dismiss();
+                                                        CustomToast.show(AddProductActivity.this,0,"Something wrong!");
+                                                        Log.d("Auction portal",task.getException().toString());
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            pd.dismiss();
+                                            CustomToast.show(AddProductActivity.this,0,"Something wrong!");
+                                            Log.d("Auction portal",task.getException().toString());
+                                        }
+                                    }
+                                });
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            CustomToast.show(AddProductActivity.this,1,"Product added!");
-                        } else {
-                            CustomToast.show(AddProductActivity.this,0,"Something wrong!");
-                            Log.d("Auction portal",task.getException().toString());
-                        }
-                        pd.hide();
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
-                });
+                }).show();
             }
         } else if (v==imgProductImage) {
             CropImage.activity()
@@ -178,12 +207,14 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK) {
+            final ProgressDialog pd = new ProgressDialog(AddProductActivity.this,R.style.DialogTheme);
+            pd.setCanceledOnTouchOutside(false);
+            pd.setMessage("Uploading image");
+            pd.show();
             sdf = new SimpleDateFormat("ddMMyyyyhhmm",Locale.US);
 
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             Uri imageUri = result.getUri();
-
-            showProgressDialog("Uploading image");
 
             byte[] imageByte = null;
 
@@ -210,22 +241,24 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                     if(task.isSuccessful()){
                         productRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
-                            public void onSuccess(Uri uri) {
-                                rootRef.child("Products").child(mAuth.getCurrentUser().getUid()).child("productImage").setValue(uri.toString())
+                            public void onSuccess(final Uri uri) {
+                                rootRef.child("Products").child("My auction").child(mAuth.getCurrentUser().getUid()).child("productImage").setValue(uri.toString())
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if(task.isSuccessful()){
-                                                    rootRef.child("Products").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                                                    rootRef.child("Products").child("Current auction").child(mAuth.getCurrentUser().getUid()).child("productImage").setValue(uri.toString());
+                                                    rootRef.child("Products").child("My auction").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                             if(dataSnapshot.hasChildren()){
                                                                 String imageUrl = dataSnapshot.child("productImage").getValue(String.class);
-                                                                Glide.with(AddProductActivity.this)
+                                                                Glide.with(getApplicationContext())
                                                                         .load(imageUrl)
                                                                         .placeholder(R.drawable.default_image)
                                                                         .into(imgProductImage);
-                                                                pd.hide();
+                                                                isImage = true;
+                                                                pd.dismiss();
                                                             }
                                                         }
 
@@ -235,6 +268,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                                                         }
                                                     });
                                                 } else {
+                                                    pd.dismiss();
                                                     CustomToast.show(AddProductActivity.this, 1, "Something wrong!");
                                                     Log.d("Auction portal",task.getException().toString());
                                                 }
@@ -243,6 +277,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                             }
                         });
                     } else {
+                        pd.dismiss();
                         CustomToast.show(AddProductActivity.this, 1, "Something wrong!");
                         Log.d("Auction Portal",task.getException().toString());
                     }

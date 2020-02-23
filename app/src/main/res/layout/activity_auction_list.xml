@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.AuctionListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -11,6 +12,21 @@
         android:layout_height="wrap_content">
         <include android:id="@+id/auctionList_toolbar"
             layout="@layout/layout_toolbar"/>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/auctionList_tabLayout"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/tabTextColor"
+            app:tabIndicatorHeight="3dp"
+            app:tabIndicatorColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabGravity="fill"
+            app:tabMode="fixed"/>
     </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/auctionList_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

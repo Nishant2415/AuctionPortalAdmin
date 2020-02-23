@@ -9,23 +9,19 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import in.nishant.auctionportaladmin.R;
-import in.nishant.auctionportaladmin.model.TotalUsers;
+import in.nishant.auctionportaladmin.model.TotalUsersModel;
 
 public class TotalUsersActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private RecyclerView recyclerView;
-    private TotalUsers totalUsers;
+    private TotalUsersModel totalUsersModel;
     private ProgressDialog pd;
     private DatabaseReference rootRef;
 
@@ -48,14 +44,13 @@ public class TotalUsersActivity extends AppCompatActivity {
         pd = new ProgressDialog(TotalUsersActivity.this,R.style.DialogTheme);
         pd.setMessage("Please wait");
         pd.setCanceledOnTouchOutside(false);
-        //pd.show();
 
         //Initializing recycler view
         recyclerView = findViewById(R.id.totalUsers_recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(TotalUsersActivity.this));
 
-        totalUsers = new TotalUsers();
+        totalUsersModel = new TotalUsersModel();
 
         //Fire base variable
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -65,14 +60,14 @@ public class TotalUsersActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //Fire base Recycler view
-        FirebaseRecyclerAdapter<TotalUsers,UserViewHolder> adapter = new FirebaseRecyclerAdapter<TotalUsers, UserViewHolder>(
-                TotalUsers.class,
+        FirebaseRecyclerAdapter<TotalUsersModel,UserViewHolder> adapter = new FirebaseRecyclerAdapter<TotalUsersModel, UserViewHolder>(
+                TotalUsersModel.class,
                 R.layout.layout_total_users,
                 UserViewHolder.class,
                 rootRef.child("Users")
         ) {
             @Override
-            protected void populateViewHolder(UserViewHolder holder, TotalUsers totalUsers, int position) {
+            protected void populateViewHolder(UserViewHolder holder, TotalUsersModel totalUsers, int position) {
                 holder.setAll(totalUsers.getUsername(),totalUsers.getMobileNo());
             }
         };
