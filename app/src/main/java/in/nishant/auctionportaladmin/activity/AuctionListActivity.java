@@ -32,8 +32,12 @@ public class AuctionListActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.auctionList_tabLayout);
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
-        tab = tabLayout.getTabAt(1);
-        tab.select();
+        if(getIntent().getBooleanExtra("isAdmin",false))
+            tabLayout.removeTabAt(1);
+        else {
+            tab = tabLayout.getTabAt(1);
+            tab.select();
+        }
     }
 
     private void setUpViewPager(ViewPager viewPager) {

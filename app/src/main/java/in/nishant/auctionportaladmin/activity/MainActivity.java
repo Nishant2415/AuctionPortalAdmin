@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DatabaseReference rootRef;
     private ProgressDialog pd;
     private FloatingActionButton fabAddProduct;
+    private boolean isAdmin = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             if(mAuth.getCurrentUser().getUid().equals(userId)){
                                 cardTotalUsers.setVisibility(View.INVISIBLE);
                                 fabAddProduct.setVisibility(View.VISIBLE);
+                                isAdmin = false;
                             }
                             pd.dismiss();
                         }
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(v==cardTotalUsers){
             startActivity(new Intent(MainActivity.this,TotalUsersActivity.class));
         } else if (v==cardAuctionList) {
-            startActivity(new Intent(MainActivity.this,AuctionListActivity.class));
+            startActivity(new Intent(MainActivity.this,AuctionListActivity.class).putExtra("isAdmin",isAdmin));
         } else if (v==cardWinnerList) {
             startActivity(new Intent(MainActivity.this,WinnerListActivity.class));
         } else  if (v==fabAddProduct){
