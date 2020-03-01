@@ -7,10 +7,12 @@ import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import in.nishant.auctionportaladmin.R;
 import in.nishant.auctionportaladmin.adapter.AuctionListPagerAdapter;
+import in.nishant.auctionportaladmin.fragment.CurrentAuctionFragment;
+import in.nishant.auctionportaladmin.fragment.MyAuctionFragment;
+import in.nishant.auctionportaladmin.fragment.PreviousAuctionFragment;
 
 public class AuctionListActivity extends AppCompatActivity {
 
-    private TabLayout.Tab tab;
     private TabLayout tabLayout;
 
     @Override
@@ -32,27 +34,14 @@ public class AuctionListActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.auctionList_tabLayout);
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
-        if(getIntent().getBooleanExtra("isAdmin",false))
-            tabLayout.removeTabAt(1);
-        else {
-            tab = tabLayout.getTabAt(1);
-            tab.select();
-        }
     }
 
     private void setUpViewPager(ViewPager viewPager) {
         AuctionListPagerAdapter adapter = new AuctionListPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new PreviousAuctionFragment(),"Previous");
+        if(!getIntent().getBooleanExtra("isAdmin",false))
+            adapter.addFragment(new MyAuctionFragment(),"My auction");
+        adapter.addFragment(new CurrentAuctionFragment(),"Current");
         viewPager.setAdapter(adapter);
-    }
-
-    @Override
-    public void onBackPressed() {
-        int position = tabLayout.getSelectedTabPosition();
-        if(position!=1){
-            tab = tabLayout.getTabAt(1);
-            tab.select();
-        } else {
-            super.onBackPressed();
-        }
     }
 }

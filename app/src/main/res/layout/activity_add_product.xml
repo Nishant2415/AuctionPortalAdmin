@@ -47,35 +47,23 @@
                     android:textSize="@dimen/editTextSize"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:padding="16dp"
-                android:orientation="horizontal"
+            <EditText
+                android:id="@+id/addProduct_edtEndDate"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/addProduct_btnEndDate"
-                    android:text="Pick end date"
-                    android:background="@drawable/layout_rounded_button"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:textColor="@color/white"
-                    android:layout_width="0dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <Button
-                    android:id="@+id/addProduct_btnEndTime"
-                    android:text="Pick end time"
-                    android:background="@drawable/layout_rounded_button"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:layout_marginStart="10dp"
-                    android:textColor="@color/white"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:hint="Enter end date"
+                android:inputType="date"
+                android:focusableInTouchMode="false"
+                android:textSize="@dimen/editTextSize"/>
 
+           <EditText
+               android:id="@+id/addProduct_edtEndTime"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:focusableInTouchMode="false"
+               android:hint="Enter end time"
+               android:inputType="time"
+               android:textSize="@dimen/editTextSize"/>
             <ImageView
                 android:id="@+id/addProduct_imgProductImage"
                 android:layout_marginTop="10dp"

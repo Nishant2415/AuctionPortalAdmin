@@ -1,7 +1,7 @@
 package in.nishant.auctionportaladmin.model;
 
 public class ProductsModel {
-    private String productName,endDate,endTime,productImage,minimalPrice,highestBid;
+    private String productName, endDate, endTime, productImage, minimalPrice, highestBid, highestBidUser;
 
     public ProductsModel() {
     }
@@ -26,5 +26,13 @@ public class ProductsModel {
 
     public String getHighestBid() {
         return highestBid;
+    }
+
+    public String getHighestBidUser() {
+        return highestBidUser;
+    }
+
+    public void setHighestBidUser(String highestBidUser) {
+        this.highestBidUser = highestBidUser;
     }
 }

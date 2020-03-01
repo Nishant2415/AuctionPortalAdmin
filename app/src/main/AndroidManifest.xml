@@ -3,7 +3,7 @@
     package="in.nishant.auctionportaladmin">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,8 +12,11 @@
         android:roundIcon="@drawable/auction"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.AddProductActivity"
-            android:parentActivityName=".activity.MainActivity"/>
+        <activity android:name=".activity.ProductDetailActivity"
+            android:parentActivityName=".activity.AuctionListActivity"></activity>
+        <activity
+            android:name=".activity.AddProductActivity"
+            android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.WinnerListActivity"
             android:parentActivityName=".activity.MainActivity" />

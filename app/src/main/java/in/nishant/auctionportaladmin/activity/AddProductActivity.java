@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -56,10 +57,9 @@ import in.nishant.auctionportaladmin.utils.CustomToast;
 public class AddProductActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Toolbar toolbar;
-    private TextInputEditText edtProductName,edtMinimalPrice,edtDescription;
-    private Button btnEndDate,btnAddProduct,btnEndTime;
+    private EditText edtProductName,edtMinimalPrice,edtDescription, edtEndDate, edtEndTime;
+    private Button btnAddProduct;
     private ImageView imgProductImage;
-    private String mEndDate,mEndTime;
     private SimpleDateFormat sdf;
     private Calendar calendar = Calendar.getInstance();
     private StorageReference mStorageRef;
@@ -81,8 +81,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         edtProductName = findViewById(R.id.addProduct_edtProductName);
         edtMinimalPrice = findViewById(R.id.addProduct_edtMinimalPrice);
         edtDescription = findViewById(R.id.addProduct_edtDescription);
-        btnEndDate = findViewById(R.id.addProduct_btnEndDate);
-        btnEndTime = findViewById(R.id.addProduct_btnEndTime);
+        edtEndDate = findViewById(R.id.addProduct_edtEndDate);
+        edtEndTime = findViewById(R.id.addProduct_edtEndTime);
         btnAddProduct = findViewById(R.id.addProduct_btnAddProduct);
         imgProductImage = findViewById(R.id.addProduct_imgProductImage);
 
@@ -99,47 +99,48 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setListeners() {
-        btnEndDate.setOnClickListener(AddProductActivity.this);
-        btnEndTime.setOnClickListener(AddProductActivity.this);
+        edtEndDate.setOnClickListener(AddProductActivity.this);
+        edtEndTime.setOnClickListener(AddProductActivity.this);
         btnAddProduct.setOnClickListener(AddProductActivity.this);
         imgProductImage.setOnClickListener(AddProductActivity.this);
     }
 
     @Override
     public void onClick(View v) {
-        if(v==btnEndDate){
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            DatePickerDialog dpd = new DatePickerDialog(AddProductActivity.this, new DatePickerDialog.OnDateSetListener() {
+        if(v==edtEndDate){
+            int calYear = calendar.get(Calendar.YEAR);
+            int calMonth = calendar.get(Calendar.MONTH);
+            int calDay = calendar.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog dpd =new DatePickerDialog(AddProductActivity.this, new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    mEndDate = dayOfMonth+"-"+(month+1)+"-"+year;
-                    Toast.makeText(AddProductActivity.this, mEndDate, Toast.LENGTH_SHORT).show();
+                    calendar.set(year,month,dayOfMonth);
+                    sdf = new SimpleDateFormat("dd MMM yyyy",Locale.US);
+                    edtEndDate.setText(sdf.format(calendar.getTime()));
                 }
-            },year,month,day);
+            },calYear,calMonth,calDay);
+            dpd.getDatePicker().setMinDate(calendar.getTimeInMillis());
             dpd.show();
-        } else if(v==btnEndTime){
-            final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        } else if(v==edtEndTime){
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
-            TimePickerDialog tpd = new TimePickerDialog(AddProductActivity.this, new TimePickerDialog.OnTimeSetListener() {
+            new TimePickerDialog(AddProductActivity.this, new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
                     calendar.set(Calendar.MINUTE,minute);
                     sdf = new SimpleDateFormat("h:mm a",Locale.US);
-                    mEndTime = sdf.format(calendar.getTime());
-                    Toast.makeText(AddProductActivity.this, mEndTime, Toast.LENGTH_SHORT).show();
+                    edtEndTime.setText(sdf.format(calendar.getTime()));
                 }
-            },hour,minute,false);
-            tpd.show();
+            },hour,minute,false).show();
         } else if(v==btnAddProduct){
             if ( !isImage |
                     edtProductName.getText().toString().trim().isEmpty() |
                     edtMinimalPrice.getText().toString().trim().isEmpty() |
                     edtDescription.getText().toString().trim().isEmpty() |
-                    TextUtils.isEmpty(mEndDate) |
-                    TextUtils.isEmpty(mEndTime)){
+                    edtEndDate.getText().toString().isEmpty() |
+                    edtEndDate.getText().toString().isEmpty()){
                 CustomToast.show(AddProductActivity.this,0,"Please enter product details!");
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddProductActivity.this);
@@ -152,12 +153,14 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                                 pd.setCanceledOnTouchOutside(false);
                                 pd.setMessage("Please wait");
                                 pd.show();
+
                                 final Map<String,Object> productMap = new HashMap<>();
                                 productMap.put("productName",edtProductName.getText().toString().trim());
                                 productMap.put("minimalPrice",edtMinimalPrice.getText().toString().trim());
                                 productMap.put("description",edtDescription.getText().toString().trim());
-                                productMap.put("endDate",mEndDate);
-                                productMap.put("endTime",mEndTime);
+                                productMap.put("highestBidUser","none");
+                                productMap.put("endDate",edtEndDate.getText().toString());
+                                productMap.put("endTime",edtEndTime.getText().toString());
                                 productMap.put("highestBid","No bid yet");
 
                                 rootRef.child("Products").child("My auction").child(mAuth.getCurrentUser().getUid()).updateChildren(productMap).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -216,6 +219,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             Uri imageUri = result.getUri();
 
+            // Compress image
             byte[] imageByte = null;
 
             try {
@@ -234,6 +238,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                 e.printStackTrace();
             }
 
+            // Adding image to storage
             final StorageReference productRef = mStorageRef.child("ProductImages").child("IMG"+sdf.format(new Date())+".jpg");
             productRef.putBytes(imageByte).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -242,12 +247,15 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                         productRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(final Uri uri) {
+                                // Adding image to database -> my auction
                                 rootRef.child("Products").child("My auction").child(mAuth.getCurrentUser().getUid()).child("productImage").setValue(uri.toString())
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if(task.isSuccessful()){
+                                                    // Adding image to database -> current auction
                                                     rootRef.child("Products").child("Current auction").child(mAuth.getCurrentUser().getUid()).child("productImage").setValue(uri.toString());
+                                                    // Showing image to image view
                                                     rootRef.child("Products").child("My auction").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

@@ -97,7 +97,6 @@ public class MyAuctionFragment extends Fragment {
     public static class MyAuctionViewHolder extends RecyclerView.ViewHolder{
 
         View view;
-        CardView cardView;
 
         public MyAuctionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -105,7 +104,6 @@ public class MyAuctionFragment extends Fragment {
         }
 
         private void setAuction(String productName, String minimalPrice, String endDate, String endTime, String productImage, String highestBid) {
-            cardView = view.findViewById(R.id.layoutCurrentAuction_card);
 
             TextView txtProductName = view.findViewById(R.id.layoutCurrentAuction_txtProductName);
             TextView txtHighestBid = view.findViewById(R.id.layoutCurrentAuction_txtHighestBid);
@@ -117,7 +115,7 @@ public class MyAuctionFragment extends Fragment {
             if(!highestBid.equals("No bid yet"))
                 txtHighestBid.setText(("Highest bid "+highestBid));
             txtMinimalBid.setText(("Minimal price "+minimalPrice));
-            txtDateTime.setText(("Will ends on "+endDate+" "+endTime));
+            txtDateTime.setText(("Ends on "+endDate+" "+endTime));
             Glide.with(view).load(productImage).placeholder(R.drawable.default_image).into(imgProductImage);
         }
     }

@@ -1,16 +1,24 @@
 package in.nishant.auctionportaladmin.adapter;
 
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import in.nishant.auctionportaladmin.fragment.CurrentAuctionFragment;
 import in.nishant.auctionportaladmin.fragment.MyAuctionFragment;
 import in.nishant.auctionportaladmin.fragment.PreviousAuctionFragment;
 
 public class AuctionListPagerAdapter extends FragmentPagerAdapter {
+
+    private List<Fragment> fragmentList = new ArrayList<>();
+    private List<String> stringList = new ArrayList<>();
 
     public AuctionListPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
@@ -19,39 +27,22 @@ public class AuctionListPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        Fragment previousAF,myAF,currentAF;
-        switch (position){
-            case 0:
-                previousAF = new PreviousAuctionFragment();
-                return previousAF;
-            case 1:
-                myAF = new MyAuctionFragment();
-                return myAF;
-            case 2:
-                currentAF = new CurrentAuctionFragment();
-                return currentAF;
-            default:
-                return null;
-        }
+        return fragmentList.get(position);
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position){
-            case 0:
-                return "Previous";
-            case 1:
-                return "My auction";
-            case 2:
-                return "Current";
-            default:
-                return null;
-        }
+        return stringList.get(position);
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return stringList.size();
+    }
+
+    public void addFragment(Fragment fragment, String s){
+        fragmentList.add(fragment);
+        stringList.add(s);
     }
 }

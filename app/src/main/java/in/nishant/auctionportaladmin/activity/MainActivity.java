@@ -4,13 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,17 +19,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import in.nishant.auctionportaladmin.R;
-import in.nishant.auctionportaladmin.utils.CustomToast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
-    private Toolbar toolbar;
     private CardView cardTotalUsers,cardAuctionList,cardWinnerList;
     private DatabaseReference rootRef;
     private ProgressDialog pd;
+    private TextView txtHelloUser;
     private FloatingActionButton fabAddProduct;
     private boolean isAdmin = true;
 
@@ -45,11 +43,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initComponents() {
         // Toolbar
-        toolbar = findViewById(R.id.main_toolbar);
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
         cardTotalUsers = findViewById(R.id.main_cardTotalUsers);
         cardAuctionList = findViewById(R.id.main_cardAuctionList);
         cardWinnerList = findViewById(R.id.main_cardWinnerList);
         fabAddProduct = findViewById(R.id.main_fabAddProduct);
+        txtHelloUser = findViewById(R.id.main_txtHelloUser);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Auction Portal");
 
@@ -80,17 +80,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             rootRef.child("Users").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.hasChildren()){
+                    if (dataSnapshot.hasChildren()) {
                         Iterable<DataSnapshot> userSnapShot = dataSnapshot.getChildren();
-                        for (DataSnapshot userKey : userSnapShot){
+                        for (DataSnapshot userKey : userSnapShot) {
                             String userId = userKey.getKey();
-                            if(mAuth.getCurrentUser().getUid().equals(userId)){
+                            if (mAuth.getCurrentUser().getUid().equals(userId)) {
                                 cardTotalUsers.setVisibility(View.INVISIBLE);
                                 fabAddProduct.setVisibility(View.VISIBLE);
+                                txtHelloUser.setText("Hello, " + dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("username").getValue(String.class));
                                 isAdmin = false;
                             }
-                            pd.dismiss();
                         }
+                        if (isAdmin) {
+                            rootRef.child("Admin").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    txtHelloUser.setText("Hello, "+dataSnapshot.child("username").getValue(String.class));
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                        pd.dismiss();
                     }
                 }
 
@@ -128,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(MainActivity.this,WinnerListActivity.class));
         } else  if (v==fabAddProduct){
             startActivity(new Intent(MainActivity.this,AddProductActivity.class));
+            finish();
         }
     }
 }
